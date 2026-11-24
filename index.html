@@ -216,7 +216,7 @@ function indentLine(id) {
   commit(next);
 }
 const zoomLevels = [0.75,1,1.5,2,3,4,6];
-let zoomIndex = 1;
+let zoom = 1;
 let suppressClick = false;
 try {
   const previous = localStorage.getItem(storageKey);
@@ -271,7 +271,7 @@ function resolveRestrictions(next,previous) {
   }
   return shifted;
 }
-function commit(next) {
+function commit(next,{fitPeriod=false}={}) {
   let shifted;
   try { shifted = resolveRestrictions(next,planning); }
   catch (exception) {
@@ -282,17 +282,17 @@ function commit(next) {
   history.push(planning);
   if (history.length > 40) history.shift();
   planning = next;
-  persist(shifted ? (shifted===1?t('1 élément reporté au prochain créneau disponible.',"1 item moved to the next available slot."):shifted+t(' éléments reportés au prochain créneau disponible.'," items moved to the next available slot.")) : '');
+  persist(shifted ? (shifted===1?t('1 élément reporté au prochain créneau disponible.',"1 item moved to the next available slot."):shifted+t(' éléments reportés au prochain créneau disponible.'," items moved to the next available slot.")) : '', fitPeriod);
 
 }
-function persist(message='') {
+function persist(message='',fitPeriod=false) {
   try {
     localStorage.setItem(storageKey,JSON.stringify(planning));
     $('status').textContent = message;
   } catch {
     $('status').textContent = t('Le navigateur bloque la sauvegarde locale. Télécharge le HTML pour conserver tes modifications.',"Local saving is blocked by your browser. Download the HTML to keep your changes.");
   }
-  render();
+  render(fitPeriod);
 }
 function svgNode(tag, attrs = {}, text) {
   const node = document.createElementNS('http://www.w3.org/2000/svg',tag);
@@ -328,24 +328,35 @@ function rangeText(start,end) {
   const sharedYear = from.getUTCFullYear() === to.getUTCFullYear();
   return (sharedYear ? new Intl.DateTimeFormat(uiLocale,{day:'numeric',month:'long',timeZone:'UTC'}) : long).format(from) + t(' au '," to ") + long.format(to);
 }
-function render() {
+function render(fitPeriod=false) {
   const {lots,items,title} = planning;
   const selectable = new Map();
   const calendar = calendarFor(items);
   $('title').textContent = title;
   document.title = title + t(' • Éditeur Gantt'," • Gantt Editor");
   $('title').setAttribute('aria-label',t('Renommer ',"Rename ")+title);
-  $('zoom-level').textContent = zoomFormat.format(zoomLevels[zoomIndex]);
-  $('zoom-out').disabled = zoomIndex===0;
-  $('zoom-in').disabled = zoomIndex===zoomLevels.length-1;
   const start = planning.startDate ? dayNumber(planning.startDate) : Math.min(firstDay,...items.map(item=>dayNumber(item.start)));
   const estimatedEnd = planning.endDate?dayNumber(planning.endDate):Math.min(lastSupportedDay,planning.startDate?start+59:lastDay);
   const end = Math.max(estimatedEnd,...items.map(item=>Math.max(dayNumber(item.end),bufferEndDay(item,calendar))));
   $('period').textContent = t('Du ',"From ") + rangeText(start,estimatedEnd);
-  const step = 4.95*zoomLevels[zoomIndex];
+  const chart = $('chart');
   const left = Math.max(215,...lots.flatMap(lot => [lot.name,...lot.rows.map(row=>row.name)]).map(name=>Math.min(400,name.length*6+30)));
   const axis = timelineAxis(start,end,calendar,planning.hideWeekends,planning.hideHolidays);
-  const right = left + Math.max(1,axis.days.length)*step + 3.3;
+  const columns = Math.max(1,axis.days.length);
+  const dayWidth = 4.95;
+  const rightPadding = 8.3;
+  if (fitPeriod && chart.clientWidth > 0) {
+    const style = getComputedStyle(chart);
+    const innerWidth = chart.clientWidth-parseFloat(style.paddingLeft)-parseFloat(style.paddingRight);
+    const timelineWidth = Math.max(1,Math.floor(innerWidth)-left-rightPadding);
+    zoom = Math.min(zoomLevels.at(-1),timelineWidth/(columns*dayWidth));
+  }
+  $('zoom-level').textContent = zoomFormat.format(zoom);
+  $('zoom-out').disabled = zoom <= zoomLevels[0];
+  $('zoom-in').disabled = zoom >= zoomLevels.at(-1);
+  const step = dayWidth*zoom;
+  const width = left+columns*step+rightPadding;
+  const right = width-5;
   const xDay = day => left + axis.column(day)*step;
   const x = iso => xDay(dayNumber(iso));
   const rows = new Map();
@@ -360,7 +371,6 @@ function render() {
   const bottom = Math.max(176,top+14);
   scale = {start,end,left,step,rows,bottom,calendar,axis,xDay,selectable,parents:new Map(sections.map(({lot,y})=>[lot.id,y+10]))};
   for (const {lot,row,y} of rows.values()) if (lot.inline && lot.rows[0]===row) scale.parents.set(lot.id,y+5);
-  const width = right+5;
   const height = bottom+28;
   const svg = svgNode('svg',{viewBox:'0 0 '+width+' '+height,width,height,'font-family':'Arial, Helvetica, sans-serif','aria-label':t('Diagramme de Gantt',"Gantt chart")});
   const background = svgNode('g');
@@ -568,7 +578,6 @@ function render() {
       width:item.kind==='delivery'?15:Math.max(5,barWidth),height:14});
     entries.append(g);
   }
-  const chart = $('chart');
   chart.replaceChildren(svg);
   paintSelection();
 }
@@ -976,7 +985,7 @@ function submit(event) {
     $('dialog').close();
     if (mode==='blank') {
       selectedItems.clear();
-      commit({title:t('Nouveau planning',"New schedule"),startDate:form.start,lots:[],items:[]});
+      commit({title:t('Nouveau planning',"New schedule"),startDate:form.start,lots:[],items:[]},{fitPeriod:true});
       $('chart').scrollLeft = 0;
     } else {
       next.startDate = form.start;
@@ -1335,15 +1344,17 @@ function restore(from,to) {
 $('title').onclick = ()=>showEditor('title');
 function changeZoom(delta,clientX) {
   if (drag || marquee) return;
-  const next = Math.max(0,Math.min(zoomLevels.length-1,zoomIndex+delta));
-  if (next===zoomIndex) return;
+  const index = zoomLevels.findIndex(level=>level>=zoom);
+  const offset = delta>0 && zoom<zoomLevels[index]?1:0;
+  const next = zoomLevels[Math.max(0,Math.min(zoomLevels.length-1,index+delta-offset))];
+  if (next===zoom || delta<0 && zoom<zoomLevels[0]) return;
   const chart = $('chart');
   const svg = chart.firstElementChild;
   const bounds = chart.getBoundingClientRect();
   const viewOffset = clientX==null?chart.clientWidth/2:Math.max(0,Math.min(chart.clientWidth,clientX-bounds.left));
   const before = chartPoint(svg,bounds.left+viewOffset,bounds.top);
   const day = Math.max(0,(before.x-scale.left)/scale.step);
-  zoomIndex = next;
+  zoom = next;
   render();
   const after = chartPoint(chart.firstElementChild,bounds.left+viewOffset,bounds.top);
   chart.scrollLeft += scale.left+day*scale.step-after.x;
@@ -1592,7 +1603,7 @@ window.addEventListener('keydown',event=>{
     commit(next);
   }
 });
-render();
+render(!planning.lots.length && !planning.items.length);
 </script>
 </body>
 </html>
