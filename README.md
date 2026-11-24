@@ -1,4 +1,4 @@
-# GanttMesc
+# GanttMesc - Gantt chart creator with MCP connectro
 
 GanttMesc stands for “gantt mes couilles”. It is a standalone, interactive Gantt editor that runs in your browser. Edit and print schedules in the HTML editor, and use the JSON files to make changes from an AI chat through MCP.
 
