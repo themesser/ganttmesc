@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Planning global • Éditeur Gantt</title>
 <style>
-:root{font-family:system-ui,-apple-system,sans-serif;color:var(--ink);background:var(--page);color-scheme:light;--ink:#162335;--page:#f4f6f9;--chart-text:#37485a;--chart-month:#cfd6dc;--chart-section:#c3ccd4;--chart-row:#e3e6ea;--chart-active:#bac7d6;--day:#f2f5f8;--day-text:#304660;--off:#e4e4e4;--row-add:#e3edf8;--marker:#b92e36;--button-hover:#eff5fa;--input-border:#b9c8d7;--danger:#9c1322;--chart-highlight:#184d8225;--chart-selection:#193b66;--chart-edge:#ffffff75;--buffer-opacity:.28;--day-on-bar:#111;--day-outline:#ffffffdb;--muted:#506177;--border:#dce3eb;--accent:#184d82;--panel:#fff}
+:root{font-family:system-ui,-apple-system,sans-serif;color:var(--ink);background:var(--page);color-scheme:light;--ink:#162335;--page:#f4f6f9;--chart-text:#37485a;--chart-month:#cfd6dc;--chart-section:#c3ccd4;--chart-row:#e3e6ea;--chart-active:#bac7d6;--day:#f2f5f8;--day-text:#304660;--off:var(--day);--row-add:#e3edf8;--marker:#b92e36;--button-hover:#eff5fa;--input-border:#b9c8d7;--danger:#9c1322;--chart-highlight:#184d8225;--chart-selection:#193b66;--chart-edge:#ffffff75;--buffer-opacity:.28;--day-on-bar:#111;--day-outline:#ffffffdb;--muted:#506177;--border:#dce3eb;--accent:#184d82;--panel:#fff}
 *{box-sizing:border-box}
 body{margin:0}
 button,input,select{font:inherit}
@@ -70,7 +70,7 @@ label.buffer-toggle{display:flex;align-items:center;gap:8px}
 .chart svg .buffer-band{fill-opacity:var(--buffer-opacity)}
 .chart svg .buffer-line,.chart svg .day-number{pointer-events:none}
 @media screen and (prefers-color-scheme:dark){
-  :root{color-scheme:dark;--ink:#edf2f8;--page:#090a0c;--panel:#111316;--muted:#b1bed0;--border:#343b46;--accent:#275e94;--chart-text:#d1dce9;--chart-month:#404a58;--chart-section:#566171;--chart-row:#303844;--chart-active:#465363;--day:#232a33;--day-text:#e0e9f3;--off:#343434;--row-add:#293d55;--marker:#ff8189;--button-hover:#212b37;--input-border:#515f71;--danger:#ff9da5;--chart-highlight:#83baff32;--chart-selection:#9bd0ff;--chart-edge:#cde4ff91;--buffer-opacity:.38}
+  :root{color-scheme:dark;--ink:#edf2f8;--page:#090a0c;--panel:#111316;--muted:#b1bed0;--border:#343b46;--accent:#275e94;--chart-text:#d1dce9;--chart-month:#404a58;--chart-section:#566171;--chart-row:#303844;--chart-active:#465363;--day:#232a33;--day-text:#e0e9f3;--off:var(--day);--row-add:#293d55;--marker:#ff8189;--button-hover:#212b37;--input-border:#515f71;--danger:#ff9da5;--chart-highlight:#83baff32;--chart-selection:#9bd0ff;--chart-edge:#cde4ff91;--buffer-opacity:.38}
   .chart svg .lot-label{fill:color-mix(in srgb, var(--lot-color) 62%, white 38%)}
   .chart svg [data-hit]:hover .shape,.chart svg [data-hit]:focus-visible .shape{filter:brightness(1.18)}
   dialog::backdrop{background:#000a}
@@ -94,20 +94,20 @@ input[type=color]{width:65px;padding:4px}
 <body>
 <main>
   <header>
-    <div class="toolbar heading"><h1><button id="title" type="button" aria-label="Renommer le planning"></button></h1>
+    <div class="toolbar heading"><h1><button id="title" type="button" aria-label="Renommer le planning" data-i18n-label="Rename the schedule"></button></h1>
     <div class="actions">
-      <div><div class="zoom-controls" role="group" aria-label="Zoom horizontal">
-        <button id="zoom-out" type="button" aria-label="Réduire le zoom horizontal">−</button>
+      <div><div class="zoom-controls" role="group" aria-label="Zoom horizontal" data-i18n-label="Horizontal zoom">
+        <button id="zoom-out" type="button" aria-label="Réduire le zoom horizontal" data-i18n-label="Zoom out horizontally">−</button>
         <output id="zoom-level" aria-live="polite">100 %</output>
-        <button id="zoom-in" type="button" aria-label="Augmenter le zoom horizontal">+</button>
-      </div><button id="start-date" type="button">Paramétrage</button><button id="export" type="button">Load/Save</button><button id="help" type="button">Aide</button><input id="load-json" type="file" accept=".json,application/json" hidden></div>
+        <button id="zoom-in" type="button" aria-label="Augmenter le zoom horizontal" data-i18n-label="Zoom in horizontally">+</button>
+      </div><button id="start-date" type="button" data-i18n="Settings">Paramétrage</button><button id="export" type="button">Load/Save</button><button id="help" type="button" data-i18n="Help">Aide</button><input id="load-json" type="file" accept=".json,application/json" hidden></div>
     </div>
     </div>
     <p class="period" id="period"></p>
     <p id="status" role="status"></p>
   </header>
-  <section class="board" aria-label="Planning Gantt">
-    <div class="chart" id="chart" tabindex="0" aria-label="Calendrier du planning"></div>
+  <section class="board" aria-label="Planning Gantt" data-i18n-label="Gantt schedule">
+    <div class="chart" id="chart" tabindex="0" aria-label="Calendrier du planning" data-i18n-label="Schedule calendar"></div>
 
   </section>
 </main>
@@ -118,9 +118,9 @@ input[type=color]{width:65px;padding:4px}
     <div class="fields" id="fields"></div>
     <p id="error" role="alert" hidden></p>
     <div class="dialog-actions">
-      <button class="danger" id="delete" type="button" hidden>Supprimer</button>
-      <button id="cancel" type="button">Fermer</button>
-      <button class="primary" id="save" type="submit">Enregistrer</button>
+      <button class="danger" id="delete" type="button" hidden data-i18n="Delete">Supprimer</button>
+      <button id="cancel" type="button" data-i18n="Close">Fermer</button>
+      <button class="primary" id="save" type="submit" data-i18n="Save">Enregistrer</button>
     </div>
   </form>
 </dialog>
@@ -129,12 +129,24 @@ input[type=color]{width:65px;padding:4px}
 'use strict';
 const $ = id => document.getElementById(id);
 const portableSource = '<!doctype html>\n' + document.documentElement.outerHTML;
+const browserLocale = globalThis.navigator?.language || 'en';
+const french = /^fr(?:-|$)/i.test(browserLocale);
+const english = /^en(?:-|$)/i.test(browserLocale);
+const uiLocale = french || english ? browserLocale : 'en-US';
+const t = (fr,en) => french ? fr : en;
+document.documentElement.lang = t('fr','en');
+if (!french) {
+  for (const element of document.querySelectorAll('[data-i18n], [data-i18n-label]')) {
+    if (element.dataset.i18n) element.textContent = element.dataset.i18n;
+    if (element.dataset.i18nLabel) element.setAttribute('aria-label',element.dataset.i18nLabel);
+  }
+}
 const embedded = JSON.parse($('planning-data').textContent);
 if (location.protocol==='https:') {
   const params = new URLSearchParams(location.search);
   const start = params.get('debut');
   if (start && /^\d{4}-\d{2}-\d{2}$/.test(start) && Number.isFinite(Date.parse(start))) {
-    Object.assign(embedded,{title:params.get('titre')?.slice(0,80)||'Nouveau planning',startDate:start,
+    Object.assign(embedded,{title:params.get('titre')?.slice(0,80)||t('Nouveau planning',"New schedule"),startDate:start,
       copyId:'site-'+location.search,lots:[],items:[]});
   }
 }
@@ -145,18 +157,19 @@ const firstDay = Date.parse('2027-01-11') / DAY;
 const lastDay = Date.parse('2027-06-25') / DAY;
 const dayNumber = iso => Date.parse(iso + 'T00:00:00Z') / DAY;
 const isoDay = day => new Date(day * DAY).toISOString().slice(0, 10);
-const dateFormat = new Intl.DateTimeFormat('fr-FR', {day:'numeric',month:'short',timeZone:'UTC'});
-const monthFormat = new Intl.DateTimeFormat('fr-FR', {month:'short',timeZone:'UTC'});
+const dateFormat = new Intl.DateTimeFormat(uiLocale, {day:'numeric',month:'short',timeZone:'UTC'});
+const zoomFormat = new Intl.NumberFormat(uiLocale,{style:'percent'});
+const monthFormat = new Intl.DateTimeFormat(uiLocale, {month:'short',timeZone:'UTC'});
 const shortDate = iso => dateFormat.format(dayNumber(iso) * DAY);
 const types = {
-  task:'Tâche', review:'Envoi / délai de retour', delivery:'Livraison',
-  marker:'Jalon global', off:'Période chômée', allocation:'Affectation seule',
-  lot:'Lot', row:'Ligne de travail'
+  task:t('Tâche',"Task"), review:t('Envoi / délai de retour',"Submission / feedback window"), delivery:t('Livraison',"Delivery"),
+  marker:t('Jalon global',"Global milestone"), off:t('Période chômée',"Non-working period"), allocation:t('Affectation seule',"Assignment only"),
+  lot:t('Lot',"Work package"), row:t('Ligne de travail',"Task row")
 };
 const displayOptions = [
-  ['hideWeekends','Masquer les week-ends'],
-  ['hideHolidays','Masquer les périodes de vacances'],
-  ['hideDayNumbers','Masquer les numéros des jours']
+  ['hideWeekends',t('Masquer les week-ends',"Hide weekends")],
+  ['hideHolidays',t('Masquer les périodes de vacances',"Hide holidays")],
+  ['hideDayNumbers',t('Masquer les numéros des jours',"Hide day numbers")]
 ];
 const rangeTypes = new Set(['task','review','off','allocation']);
 const bufferTypes = new Set(['marker','delivery','task','review']);
@@ -176,7 +189,7 @@ const rowColors = ['#378ADD','#BA7517','#1D9E75','#D4537E','#7655B5','#247C86','
 function insertLine(lotId,rowId,asChild=false) {
   const next = clone(planning);
   const lot = next.lots.find(lot=>lot.id===lotId);
-  const row = {id:newId(),name:'Nouvelle ligne'};
+  const row = {id:newId(),name:t('Nouvelle ligne',"New row")};
   const index = lot?.rows.findIndex(row=>row.id===rowId);
   if (lot && ((asChild && (lot.inline || index<0)) || (index>=0 && (!lot.inline || index>0)))) {
     lot.rows.splice(asChild && index<1 ? lot.rows.length : index+1,0,row);
@@ -240,10 +253,10 @@ function resolveRestrictions(next,previous) {
     for (const [from,to] of intervals.sort((a,b)=>a[0]-b[0])) {
       if (start+span<from) break;
       if (start>to) continue;
-      if (!workingDays(to+1,lastSupportedDay,calendar)) throw Error('Aucun jour disponible pour '+item.restriction+'.');
+      if (!workingDays(to+1,lastSupportedDay,calendar)) throw Error(t('Aucun jour disponible pour ',"No available day for ")+item.restriction+'.');
       start = advanceWorkingDays(to+1,1,calendar);
     }
-    if (start+span>lastSupportedDay) throw Error('Aucune période disponible pour '+item.restriction+'.');
+    if (start+span>lastSupportedDay) throw Error(t('Aucune période disponible pour ',"No available time slot for ")+item.restriction+'.');
     if (start!==desired) {
       shifted++;
       item.start = isoDay(start);
@@ -269,7 +282,7 @@ function commit(next) {
   history.push(planning);
   if (history.length > 40) history.shift();
   planning = next;
-  persist(shifted ? (shifted===1?'1 élément reporté au prochain créneau disponible.':shifted+' éléments reportés au prochain créneau disponible.') : '');
+  persist(shifted ? (shifted===1?t('1 élément reporté au prochain créneau disponible.',"1 item moved to the next available slot."):shifted+t(' éléments reportés au prochain créneau disponible.'," items moved to the next available slot.")) : '');
 
 }
 function persist(message='') {
@@ -277,7 +290,7 @@ function persist(message='') {
     localStorage.setItem(storageKey,JSON.stringify(planning));
     $('status').textContent = message;
   } catch {
-    $('status').textContent = 'Le navigateur bloque la sauvegarde locale. Télécharge le HTML pour conserver tes modifications.';
+    $('status').textContent = t('Le navigateur bloque la sauvegarde locale. Télécharge le HTML pour conserver tes modifications.',"Local saving is blocked by your browser. Download the HTML to keep your changes.");
   }
   render();
 }
@@ -311,24 +324,24 @@ function itemLabel(item) {
 function rangeText(start,end) {
   const from = new Date(start * DAY);
   const to = new Date(end * DAY);
-  const long = new Intl.DateTimeFormat('fr-FR',{day:'numeric',month:'long',year:'numeric',timeZone:'UTC'});
+  const long = new Intl.DateTimeFormat(uiLocale,{day:'numeric',month:'long',year:'numeric',timeZone:'UTC'});
   const sharedYear = from.getUTCFullYear() === to.getUTCFullYear();
-  return (sharedYear ? new Intl.DateTimeFormat('fr-FR',{day:'numeric',month:'long',timeZone:'UTC'}) : long).format(from) + ' au ' + long.format(to);
+  return (sharedYear ? new Intl.DateTimeFormat(uiLocale,{day:'numeric',month:'long',timeZone:'UTC'}) : long).format(from) + t(' au '," to ") + long.format(to);
 }
 function render() {
   const {lots,items,title} = planning;
   const selectable = new Map();
   const calendar = calendarFor(items);
   $('title').textContent = title;
-  document.title = title + ' • Éditeur Gantt';
-  $('title').setAttribute('aria-label','Renommer '+title);
-  $('zoom-level').textContent = Math.round(zoomLevels[zoomIndex]*100)+' %';
+  document.title = title + t(' • Éditeur Gantt'," • Gantt Editor");
+  $('title').setAttribute('aria-label',t('Renommer ',"Rename ")+title);
+  $('zoom-level').textContent = zoomFormat.format(zoomLevels[zoomIndex]);
   $('zoom-out').disabled = zoomIndex===0;
   $('zoom-in').disabled = zoomIndex===zoomLevels.length-1;
   const start = planning.startDate ? dayNumber(planning.startDate) : Math.min(firstDay,...items.map(item=>dayNumber(item.start)));
   const estimatedEnd = planning.endDate?dayNumber(planning.endDate):Math.min(lastSupportedDay,planning.startDate?start+59:lastDay);
   const end = Math.max(estimatedEnd,...items.map(item=>Math.max(dayNumber(item.end),bufferEndDay(item,calendar))));
-  $('period').textContent = 'Du ' + rangeText(start,estimatedEnd);
+  $('period').textContent = t('Du ',"From ") + rangeText(start,estimatedEnd);
   const step = 4.95*zoomLevels[zoomIndex];
   const left = Math.max(215,...lots.flatMap(lot => [lot.name,...lot.rows.map(row=>row.name)]).map(name=>Math.min(400,name.length*6+30)));
   const axis = timelineAxis(start,end,calendar,planning.hideWeekends,planning.hideHolidays);
@@ -349,7 +362,7 @@ function render() {
   for (const {lot,row,y} of rows.values()) if (lot.inline && lot.rows[0]===row) scale.parents.set(lot.id,y+5);
   const width = right+5;
   const height = bottom+28;
-  const svg = svgNode('svg',{viewBox:'0 0 '+width+' '+height,width,height,'font-family':'Arial, Helvetica, sans-serif','aria-label':'Diagramme de Gantt'});
+  const svg = svgNode('svg',{viewBox:'0 0 '+width+' '+height,width,height,'font-family':'Arial, Helvetica, sans-serif','aria-label':t('Diagramme de Gantt',"Gantt chart")});
   const background = svgNode('g');
   const grid = svgNode('g');
   const markers = svgNode('g');
@@ -369,7 +382,7 @@ function render() {
     const full = span>=24;
     background.append(rect(x(item.start),full?20:40,span,bottom-(full?20:40), 'var(--off)'));
     const g = group('item:'+item.id,itemLabel(item));
-    if (full) g.append(rect(x(item.start),1,span,19,'transparent',{class:'target'}),label(item.name || 'Période chômée',x(item.start)+span/2,16,{'text-anchor':'middle',class:'label'}));
+    if (full) g.append(rect(x(item.start),1,span,19,'transparent',{class:'target'}),label(item.name || t('Période chômée',"Non-working period"),x(item.start)+span/2,16,{'text-anchor':'middle',class:'label'}));
     else g.append(rect(x(item.start)-1,34,span+2,10, 'var(--off)',{rx:1,class:'shape'}));
     offLabels.append(g);
   }
@@ -384,19 +397,18 @@ function render() {
       grid.append(line(pos,20,pos,bottom, 'var(--chart-month)'),label(month,pos+4,34,{'font-size':12,'font-weight':600}));
     }
   }
-  grid.append(label('Affectations',10,57,{'font-weight':600}));
   if (!axis.days.length) {
-    grid.append(label('Aucun jour à afficher avec ces filtres.',10,75));
+    grid.append(label(t('Aucun jour à afficher avec ces filtres.',"No days to show with these filters."),10,75));
   }
   if (planning.endDate) {
     const boundary = xDay(dayNumber(planning.endDate)+1);
     const estimate = line(boundary,79,boundary,bottom,'#657991',1);
     estimate.setAttribute('stroke-dasharray','4 3');
-    estimate.append(svgNode('title',{},'Fin estimée · '+shortDate(planning.endDate)));
+    estimate.append(svgNode('title',{},t('Fin estimée · ',"Estimated end · ")+shortDate(planning.endDate)));
     grid.append(estimate);
   }
   function plus(id,y,empty=false) {
-    const g = group('plus:'+id,'Insérer une ligne en dessous',true);
+    const g = group('plus:'+id,t('Insérer une ligne en dessous',"Insert a row below"),true);
     g.setAttribute('class','row-plus'+(empty?' empty-plus':''));
     g.append(rect(3,y-2,15,15, 'var(--row-add)',{rx:3}),label('+',10.5,y+9,{'text-anchor':'middle','font-weight':700}));
     return g;
@@ -407,7 +419,7 @@ function render() {
   for (const {lot,y} of sections) {
     grid.append(line(10,y,right,y, 'var(--chart-section)'));
     if (lot.inline) continue;
-    const g = group('lot:'+lot.id,'Modifier ou déplacer le lot '+lot.name,true);
+    const g = group('lot:'+lot.id,t('Modifier ou déplacer le lot ',"Edit or move work package ")+lot.name,true);
     g.setAttribute('class','line-title');
     g.append(rect(0,y+2,left-3,20,'transparent',{class:'target'}),label(lot.name,23,y+16,{fill:lot.color,'font-size':12.5, 'font-weight':600,class:'label lot-label',style:'--lot-color:'+lot.color}));
     const heading = svgNode('g',{class:'row-heading'});
@@ -415,7 +427,7 @@ function render() {
     grid.append(heading);
   }
   for (const {lot,row,y} of rows.values()) {
-    const g = group('row:'+row.id,'Modifier la ligne '+row.name+' · '+lot.name,true);
+    const g = group('row:'+row.id,t('Modifier la ligne ',"Edit row ")+row.name+' · '+lot.name,true);
     const root = lot.inline && lot.rows[0]===row;
     g.setAttribute('class',root?'line-title root-title':'line-title');
     g.append(rect(0,y-2,left-3,16,'transparent',{class:'target'}),label(row.name,root?23:40,y+9,{
@@ -423,7 +435,7 @@ function render() {
     }));
     const heading = svgNode('g',{class:'row-heading'});
     heading.append(g,plus(lot.id+':'+row.id,y));
-    const cell = group('cell:'+row.id,'Ajouter une tâche · '+row.name);
+    const cell = group('cell:'+row.id,t('Ajouter une tâche · ',"Add task · ")+row.name);
     cell.append(rect(left,y-2,right-left,17,'transparent',{class:'target'}));
     const active = items.some(item=>item.row===row.id && rowTypes.has(item.kind));
     grid.append(cell,heading);
@@ -453,21 +465,20 @@ function render() {
     const number = String(calendarDay.getUTCDate());
     const nonWorking = weekend || daysOff.has(day);
     if (weekend) background.append(rect(pos,40,step,bottom-40,'var(--off)'));
-    const dayTitle = 'Maj + clic pour ajouter un jalon global le '+shortDate(date);
+    const dayTitle = t('Maj + clic pour ajouter un jalon global le ',"Shift-click to add a global milestone on ")+shortDate(date);
     const cell = group('day:'+date,dayTitle,true);
     cell.setAttribute('data-day',date);
     cell.append(rect(pos,46,step,16,nonWorking?'var(--off)':'var(--day)',{class:'day-highlight'}));
     const assignments = weekend?[]:[...(overview.get(day)?.values()||[])];
-    const bandHeight = (nonWorking?5:16)/assignments.length;
-    const bandTop = nonWorking?57:46;
+    const bandHeight = 16/Math.max(1,assignments.length);
     assignments.forEach((item,index)=>{
       const g = group('item:'+item.id,itemLabel(item)+' · '+dayTitle);
       g.setAttribute('data-day',date);
-      g.append(rect(pos+.3,bandTop+index*bandHeight,step-.6,bandHeight,colors.get(item.lot),{rx:1,class:'shape day-highlight'}));
+      g.append(rect(pos+.3,46+index*bandHeight,step-.6,bandHeight,colors.get(item.lot),{rx:1,class:'shape day-highlight'}));
       cell.append(g);
     });
     if (!planning.hideDayNumbers && (step>=7 || weekday===1 || number==='1')) {
-      const occupied = !nonWorking && assignments.length>0;
+      const occupied = assignments.length>0;
       cell.append(label(number,pos+step/2,57,{
         class:'day-number',fill:occupied?'var(--day-on-bar)':'var(--day-text)',
         stroke:occupied?'var(--day-outline)':'none','stroke-width':1.5,'paint-order':'stroke',
@@ -480,8 +491,8 @@ function render() {
     const pos = xDay(bufferStartDay(item));
     const days = bufferDaysFor(item);
     const length = bufferWidth(item,days)*step;
-    const title = length ? 'Tampon de '+bufferLabel(days)+' · Maj + glisser pour modifier'
-      : 'Maj + glisser pour ajouter un tampon';
+    const title = length ? t('Tampon de ',"Buffer of ")+bufferLabel(days)+t(' · Maj + glisser pour modifier'," · Shift-drag to edit")
+      : t('Maj + glisser pour ajouter un tampon',"Shift-drag to add a buffer");
     if (length || item.kind==='review') g.append(bufferLine(pos,y,length,color));
     const handle = rect(pos-4,y-4,length+9,8,'transparent',{'data-buffer':'','class':'buffer-handle'});
     handle.append(svgNode('title',{},title));
@@ -497,11 +508,11 @@ function render() {
     const endPos = xDay(dayNumber(item.end)+1);
     if (endPos-pos>step) g.append(rect(pos,40,endPos-pos,bottom-52,red,{'fill-opacity':.12}));
     const date = (!item.diamond && item.caption) || (item.end===item.start?shortDate(item.start):shortDate(item.start)+' – '+shortDate(item.end));
-    const labelWidth = Math.max(65,(item.name||'Jalon').length*7,date.length*7);
+    const labelWidth = Math.max(65,(item.name||t('Jalon',"Milestone")).length*7,date.length*7);
     g.append(line(pos,40,pos,bottom-12,red,1.3),
       rect(pos-3,40,6,bottom-52,'transparent',{class:'target'}),
       rect(anchor==='start'?tx:anchor==='end'?tx-labelWidth:tx-labelWidth/2,bottom-1,labelWidth,28,'transparent',{class:'target'}),
-      label(item.name || 'Jalon',tx,bottom+4,{fill:red,'font-size':12,'font-weight':600,'text-anchor':anchor,class:'label'}),
+      label(item.name || t('Jalon',"Milestone"),tx,bottom+4,{fill:red,'font-size':12,'font-weight':600,'text-anchor':anchor,class:'label'}),
       label(date,tx,bottom+19,{fill:red,'font-size':12,'text-anchor':anchor}));
     if (item.diamond) {
       const dx = endPos;
@@ -528,7 +539,7 @@ function render() {
       const handleWidth = Math.min(6,barWidth*.25);
       for (const [edge,position] of [['start',pos],['end',pos+barWidth-handleWidth]]) {
         const handle = rect(position,y-1,handleWidth,12,'transparent',{'data-edge':edge});
-        handle.append(svgNode('title',{},edge==='start'?'Tirer pour modifier le début':'Tirer pour modifier la fin'));
+        handle.append(svgNode('title',{},edge==='start'?t('Tirer pour modifier le début',"Drag to change the start date"):t('Tirer pour modifier la fin',"Drag to change the end date")));
         g.append(handle);
       }
     }
@@ -631,7 +642,7 @@ function advanceWorkingDays(start,count,calendar) {
   return low;
 }
 function bufferLabel(days) {
-  return days+(days===1?' jour ouvré':' jours ouvrés');
+  return days+(days===1?t(' jour ouvré'," working day"):t(' jours ouvrés'," working days"));
 }
 function bufferStartDay(item) {
   return item.kind==='review'?dayNumber(item.start):dayNumber(item.end)+1;
@@ -708,7 +719,7 @@ const listOptions = () => [...planning.items].sort((a,b)=>a.start.localeCompare(
 function showEditor(mode, seed = {}) {
   editor = {mode,seed,kind:seed.kind || 'task'};
   if (mode === 'browse' && !planning.items.length) {
-    $('status').textContent = 'Aucun élément daté. Clique sur « Ajouter » pour commencer.';
+    $('status').textContent = t('Aucun élément daté. Clique sur « Ajouter » pour commencer.',"There are no scheduled items yet. Click an empty cell to add a task.");
     return;
   }
   buildForm();
@@ -721,10 +732,10 @@ function buildForm() {
   $('error').hidden = true;
   $('delete').hidden = !['item','lot','row'].includes(mode);
   $('save').hidden = mode==='files' || mode==='help';
-  $('save').textContent = mode==='browse' ? 'Modifier' : 'Enregistrer';
+  $('save').textContent = mode==='browse' ? t('Modifier',"Edit") : t('Enregistrer',"Save");
   $('dialog-title').textContent = ({
-    help:'Aide du planning', files:'Load/Save', date:'Paramétrage du planning', blank:'Créer un Gantt vierge', title:'Renommer le planning', browse:'Liste des éléments', add:'Ajouter au planning',
-    bulk:'Restriction par identifiant', item:'Modifier · '+types[kind], lot:'Modifier le lot', row:'Modifier la ligne'
+    help:t('Aide du planning',"Gantt help"), files:'Load/Save', date:t('Paramétrage du planning',"Schedule settings"), blank:t('Créer un Gantt vierge',"Create a blank Gantt chart"), title:t('Renommer le planning',"Rename the schedule"), browse:t('Liste des éléments',"Scheduled items"), add:t('Ajouter au planning',"Add to schedule"),
+    bulk:t('Restriction par identifiant',"Resource scheduling constraint"), item:t('Modifier · ',"Edit · ")+types[kind], lot:t('Modifier le lot',"Edit work package"), row:t('Modifier la ligne',"Edit row")
   })[mode];
   if (mode==='bulk') {
     const batch = planning.items.filter(item=>seed.ids.includes(item.id));
@@ -737,18 +748,18 @@ function buildForm() {
     const list = document.createElement('ul');
     list.className = 'help-list';
     for (const text of [
-      'Maj + clic dans la barre des jours pour créer un jalon global.',
-      'Clique dans une case vide pour ajouter une tâche. Clic droit pour choisir le type d’élément.',
-      'Double-clique sur un bloc ou un jalon pour modifier ses dates, son nom ou son tampon.',
-      'Glisse depuis un espace vide pour sélectionner plusieurs blocs. Double-clique sur l’un d’eux pour modifier leur identifiant commun.',
-      'Si des tâches partagent un identifiant, les tâches ajoutées ou modifiées sont reportées au premier créneau ouvré disponible en cas de chevauchement.',
-      'Maj + glisser depuis la fin d’un bloc ou l’extrémité du tampon pour régler le délai.',
-      'Glisse un bloc pour le déplacer ou tire ses bords pour changer ses dates.',
-      'Survole un titre pour afficher le +. Maj + clic sur le + ajoute une sous-ligne.',
-      'Clique sur un titre pour le renommer. Glisse-le verticalement pour réordonner les lignes ou vers la droite pour créer une sous-ligne.',
-      'Dans Paramétrage, saisis les vacances. Elles sont exclues du décompte du tampon, comme les week-ends.',
-      'Dans Paramétrage, masque les numéros des jours pour alléger la barre du calendrier.',
-      '⌘Z annule, ⇧⌘Z rétablit. ⌫ supprime l’élément sélectionné. La molette zoome.'
+      t('Maj + clic dans la barre des jours pour créer un jalon global.',"Shift-click the day header to create a global milestone."),
+      t('Clique dans une case vide pour ajouter une tâche. Clic droit pour choisir le type d’élément.',"Click an empty cell to add a task. Right-click to choose the item type."),
+      t('Double-clique sur un bloc ou un jalon pour modifier ses dates, son nom ou son tampon.',"Double-click a block or milestone to edit its dates, name, or buffer."),
+      t('Glisse depuis un espace vide pour sélectionner plusieurs blocs. Double-clique sur l’un d’eux pour modifier leur identifiant commun.',"Drag from an empty area to select multiple blocks. Double-click one to edit their shared resource ID."),
+      t('Si des tâches partagent un identifiant, les tâches ajoutées ou modifiées sont reportées au premier créneau ouvré disponible en cas de chevauchement.',"When tasks share a resource ID, new or edited tasks that overlap move to the next available working slot."),
+      t('Maj + glisser depuis la fin d’un bloc ou l’extrémité du tampon pour régler le délai.',"Hold Shift and drag the end of a block or buffer to adjust the buffer."),
+      t('Glisse un bloc pour le déplacer ou tire ses bords pour changer ses dates.',"Drag a block to move it or drag its edges to change its dates."),
+      t('Survole un titre pour afficher le +. Maj + clic sur le + ajoute une sous-ligne.',"Hover over a row title to show +. Shift-click + to add a child row."),
+      t('Clique sur un titre pour le renommer. Glisse-le verticalement pour réordonner les lignes ou vers la droite pour créer une sous-ligne.',"Click a title to rename it. Drag it vertically to reorder rows or to the right to make it a child row."),
+      t('Dans Paramétrage, saisis les vacances. Elles sont exclues du décompte du tampon, comme les week-ends.',"Enter holidays in Settings. Buffer days skip holidays and weekends."),
+      t('Dans Paramétrage, masque les numéros des jours pour alléger la barre du calendrier.',"In Settings, you can hide the day numbers to simplify the calendar header."),
+      t('⌘Z annule, ⇧⌘Z rétablit. ⌫ supprime l’élément sélectionné. La molette zoome.',"Use ⌘Z to undo, ⇧⌘Z to redo, and Backspace to delete a selection. Scroll to zoom.")
     ]) {
       const entry = document.createElement('li');
       entry.textContent = text;
@@ -759,9 +770,9 @@ function buildForm() {
   }
   if (mode==='files') {
     for (const [label,action] of [
-      ['Sauvegarder le JSON',saveJson],['Charger un fichier JSON',()=>$('load-json').click()],
-      ['Exporter en PDF',()=>{$('dialog').close();window.print();}],
-      ['Télécharger le HTML',exportHtml],['Nouveau Gantt',()=>showEditor('blank')]
+      [t('Sauvegarder le JSON',"Save JSON"),saveJson],[t('Charger un fichier JSON',"Load JSON file"),()=>$('load-json').click()],
+      [t('Exporter en PDF',"Export as PDF"),()=>{$('dialog').close();window.print();}],
+      [t('Télécharger le HTML',"Download HTML"),exportHtml],[t('Nouveau Gantt',"New Gantt chart"),()=>showEditor('blank')]
     ]) {
       const button = document.createElement('button');
       button.textContent = label;
@@ -772,14 +783,14 @@ function buildForm() {
     return;
   }
   if (mode==='date' || mode==='blank') {
-    addField('start','Date de départ',{type:'date',value:mode==='blank'?localToday():isoDay(scale.start),wide:true});
+    addField('start',t('Date de départ',"Start date"),{type:'date',value:mode==='blank'?localToday():isoDay(scale.start),wide:true});
     if (mode==='date') {
-      addField('end','Fin estimée',{type:'date',value:planning.endDate||isoDay(planning.startDate?Math.min(lastSupportedDay,scale.start+59):lastDay),wide:true});
+      addField('end',t('Fin estimée',"Estimated end date"),{type:'date',value:planning.endDate||isoDay(planning.startDate?Math.min(lastSupportedDay,scale.start+59):lastDay),wide:true});
       editor.holidaysText = formatHolidays(planning.items,isoDay(scale.start).slice(0,4));
-      const holidays = addField('holidays','Vacances et jours chômés',{value:editor.holidaysText,wide:true,required:false,limit:10000});
+      const holidays = addField('holidays',t('Vacances et jours chômés',"Holidays and non-working days"),{value:editor.holidaysText,wide:true,required:false,limit:10000});
       holidays.placeholder = '20/02-7/03; 17/04-2/05; 6/05;';
       const note = document.createElement('small');
-      note.textContent = 'Dates incluses. Ajoute /AAAA pour préciser une autre année.';
+      note.textContent = t('Dates incluses. Ajoute /AAAA pour préciser une autre année.',"Use day/month format. Dates are inclusive. Add /YYYY to specify another year.");
       holidays.parentElement.append(note);
       for (const [key,title] of displayOptions) {
         const toggle = addField(key,title,{type:'checkbox',wide:true,required:false,value:planning[key]});
@@ -791,11 +802,11 @@ function buildForm() {
     return;
   }
   if (mode==='title') {
-    addField('name','Titre du planning',{value:planning.title,wide:true,limit:80});
+    addField('name',t('Titre du planning',"Schedule title"),{value:planning.title,wide:true,limit:80});
     return;
   }
   if (mode==='browse') {
-    addField('item','Élément à modifier',{options:listOptions(),wide:true});
+    addField('item',t('Élément à modifier',"Item to edit"),{options:listOptions(),wide:true});
     return;
   }
   if (mode==='add') {
@@ -804,7 +815,7 @@ function buildForm() {
       return !['row','allocation'].includes(type) || planning.lots.length;
     });
     if (!options.some(([type])=>type===editor.kind)) editor.kind = options[0][0];
-    const field = addField('kind','Type d’élément',{options,value:editor.kind,wide:true});
+    const field = addField('kind',t('Type d’élément',"Item type"),{options,value:editor.kind,wide:true});
     field.onchange = () => {
       editor.kind = field.value;
       buildForm();
@@ -813,33 +824,33 @@ function buildForm() {
   }
   const selectedType = editor.kind;
   if (['lot','row'].includes(selectedType)) {
-    if (selectedType==='row' && mode==='add') addField('lot','Lot',{options:lotOptions(),value:seed.lot,wide:true});
-    addField('name',selectedType==='lot'?'Nom du lot':'Nom de la ligne',{value:seed.name,wide:true,limit:36});
-    if (selectedType==='lot') addField('color','Couleur',{value:seed.color||'#437cac',type:'color'});
+    if (selectedType==='row' && mode==='add') addField('lot',t('Lot',"Work package"),{options:lotOptions(),value:seed.lot,wide:true});
+    addField('name',selectedType==='lot'?t('Nom du lot',"Work package name"):t('Nom de la ligne',"Row name"),{value:seed.name,wide:true,limit:36});
+    if (selectedType==='lot') addField('color',t('Couleur',"Color"),{value:seed.color||'#437cac',type:'color'});
     return;
   }
   if (rowTypes.has(selectedType) && mode==='add') {
     const withRows = lotOptions().filter(([id])=>rowsFor(id).length);
-    const lot = addField('lot','Lot',{options:withRows,value:seed.lot,wide:true});
-    const row = addField('row','Ligne de travail',{options:rowsFor(lot.value),value:seed.row,wide:true});
+    const lot = addField('lot',t('Lot',"Work package"),{options:withRows,value:seed.lot,wide:true});
+    const row = addField('row',t('Ligne de travail',"Task row"),{options:rowsFor(lot.value),value:seed.row,wide:true});
     lot.onchange = ()=>setOptions(row,rowsFor(lot.value),seed.row);
   } else if (selectedType==='allocation') {
-    addField('lot','Lot',{options:lotOptions(),value:seed.lot,wide:true});
+    addField('lot',t('Lot',"Work package"),{options:lotOptions(),value:seed.lot,wide:true});
   }
   if (selectedType!=='allocation') {
     const required = selectedType==='off';
-    addField('name',required?'Intitulé':'Intitulé (facultatif)',{
-      value:seed.name ?? (selectedType==='off'?'Vacances':''),wide:true,required,limit:42
+    addField('name',required?t('Intitulé',"Name"):t('Intitulé (facultatif)',"Name (optional)"),{
+      value:seed.name ?? (selectedType==='off'?t('Vacances',"Holidays"):''),wide:true,required,limit:42
     });
   }
   let delivery;
   if (['task','delivery','marker'].includes(selectedType)) {
-    delivery = addField('isDelivery','Livraison (losange avec date)',{type:'checkbox',wide:true,required:false,value:selectedType==='delivery'||seed.diamond});
+    delivery = addField('isDelivery',t('Livraison (losange avec date)',"Delivery (diamond with date)"),{type:'checkbox',wide:true,required:false,value:selectedType==='delivery'||seed.diamond});
   }
   const isRange = selectedType!=='review' && (rangeTypes.has(selectedType) || bufferTypes.has(selectedType));
-  const start = addField('start',isRange?'Début':'Date',{type:'date',value:seed.start||isoDay(scale.start),wide:!isRange});
+  const start = addField('start',isRange?t('Début',"Start"):'Date',{type:'date',value:seed.start||isoDay(scale.start),wide:!isRange});
   if (isRange) {
-    const end = addField('end','Fin incluse',{type:'date',value:seed.end||start.value});
+    const end = addField('end',t('Fin incluse',"End date (inclusive)"),{type:'date',value:seed.end||start.value});
     start.onchange = ()=>{
       if (!end.value || dayNumber(end.value)<dayNumber(start.value)) end.value = start.value;
     };
@@ -849,11 +860,11 @@ function buildForm() {
       updateDelivery();
     }
   }
-  if (selectedType==='marker') addField('caption','Texte sous le jalon (facultatif)',{value:seed.caption,wide:true,required:false,limit:36});
+  if (selectedType==='marker') addField('caption',t('Texte sous le jalon (facultatif)',"Text below milestone (optional)"),{value:seed.caption,wide:true,required:false,limit:36});
   if (bufferTypes.has(selectedType)) {
     const existingDays = bufferDaysFor(seed);
-    const toggle = addField('hasBuffer','Activer la zone tampon',{type:'checkbox',wide:true,required:false,value:existingDays>0});
-    const duration = addField('bufferDays','Durée en jours ouvrés',{type:'number',value:existingDays||1,wide:true});
+    const toggle = addField('hasBuffer',t('Activer la zone tampon',"Enable buffer"),{type:'checkbox',wide:true,required:false,value:existingDays>0});
+    const duration = addField('bufferDays',t('Durée en jours ouvrés',"Duration in working days"),{type:'number',value:existingDays||1,wide:true});
     duration.min = '1';
     duration.step = '1';
     function updateBufferField() { duration.disabled = !toggle.checked; }
@@ -863,13 +874,13 @@ function buildForm() {
   }
 }
 function addRestrictionFields(value,mixed=false) {
-  const toggle = addField('hasRestriction','Activer la restriction par identifiant',{
+  const toggle = addField('hasRestriction',t('Activer la restriction par identifiant',"Prevent overlaps for this resource"),{
     type:'checkbox',wide:true,required:false,value:Boolean(value)
   });
-  const input = addField('restriction','Identifiant',{value:value||'',wide:true,required:false,limit:80});
+  const input = addField('restriction',t('Identifiant',"Resource ID"),{value:value||'',wide:true,required:false,limit:80});
   if (mixed) {
     toggle.indeterminate = true;
-    input.placeholder = 'Plusieurs identifiants';
+    input.placeholder = t('Plusieurs identifiants',"Multiple resource IDs");
   }
   const sync = ()=>{ input.disabled = !toggle.checked; };
   toggle.onchange = sync;
@@ -895,21 +906,21 @@ function formatHolidays(items,year) {
 function readHolidays(text,year,existing) {
   function parse(text,fallbackYear) {
     const parts = /^(\d{1,2})\/(\d{1,2})(?:\/(\d{4}))?$/.exec(text.trim());
-    if (!parts) throw Error('Date invalide');
+    if (!parts) throw Error(t('Date invalide',"Invalid date"));
     const [_,day,month,explicitYear] = parts;
     const date = (explicitYear||fallbackYear)+'-'+month.padStart(2,'0')+'-'+day.padStart(2,'0');
-    if (!validIso(date)) throw Error('Date invalide');
+    if (!validIso(date)) throw Error(t('Date invalide',"Invalid date"));
     return date;
   }
   return [...new Set(text.split(';').map(piece=>piece.trim()).filter(Boolean))].map(piece=>{
     const parts = piece.split(/[-–]/);
-    if (parts.length>2) throw Error('Période invalide');
+    if (parts.length>2) throw Error(t('Période invalide',"Invalid date range"));
     const start = parse(parts[0],year);
     let end = parts.length===2?parse(parts[1],start.slice(0,4)):start;
     if (end.slice(5,7)<start.slice(5,7) && end<start && parts[1].trim().split('/').length===2) end = parse(parts[1],String(Number(start.slice(0,4))+1));
-    if (end<start) throw Error('Période invalide');
+    if (end<start) throw Error(t('Période invalide',"Invalid date range"));
     return existing.find(item=>item.kind==='off' && item.start===start && item.end===end)
-      || {id:newId(),kind:'off',name:start===end?'Jour chômé':'Vacances',start,end};
+      || {id:newId(),kind:'off',name:start===end?t('Jour chômé',"Non-working day"):t('Vacances',"Holidays"),start,end};
   });
 }
 function submit(event) {
@@ -922,12 +933,12 @@ function submit(event) {
   }
   const name = form.name?.trim();
   if ($('field-name')?.required && !name) {
-    error('Saisis un intitulé.');
+    error(t('Saisis un intitulé.',"Enter a name."));
     return;
   }
   const next = clone(planning);
   if (editor.restrictionToggle && !editor.restrictionToggle.indeterminate && form.hasRestriction && !form.restriction?.trim()) {
-    error('Saisis le nom de l’identifiant.');
+    error(t('Saisis le nom de l’identifiant.',"Enter a resource ID."));
     return;
   }
   const restriction = form.hasRestriction?form.restriction.trim().slice(0,80):'';
@@ -944,11 +955,11 @@ function submit(event) {
   }
   if (mode==='date' || mode==='blank') {
     if (!validIso(form.start)) {
-      error('Saisis une date avec une année à quatre chiffres.');
+      error(t('Saisis une date avec une année à quatre chiffres.',"Enter a date with a four-digit year."));
       return;
     }
     if (mode==='date' && (!validIso(form.end) || form.end<form.start)) {
-      error('La fin estimée doit être égale ou postérieure au début.');
+      error(t('La fin estimée doit être égale ou postérieure au début.',"The estimated end date must be on or after the start date."));
       return;
     }
     if (mode==='date' && form.holidays!==undefined && form.holidays!==editor.holidaysText) {
@@ -956,13 +967,13 @@ function submit(event) {
         const ranges = readHolidays(form.holidays,form.start.slice(0,4),next.items);
         next.items = [...next.items.filter(item=>item.kind!=='off'),...ranges];
       } catch {
-        error('Saisis les vacances sous la forme 20/02-7/03; 6/05; avec des dates valides.');
+        error(t('Saisis les vacances sous la forme 20/02-7/03; 6/05; avec des dates valides.',"Enter valid holidays in day/month format, such as 20/02-7/03; 6/05;."));
         return;
       }
     }
     $('dialog').close();
     if (mode==='blank') {
-      downloadHtml({title:'Nouveau planning',startDate:form.start,lots:[],items:[]});
+      downloadHtml({title:t('Nouveau planning',"New schedule"),startDate:form.start,lots:[],items:[]});
     } else {
       next.startDate = form.start;
       next.endDate = form.end;
@@ -992,11 +1003,11 @@ function submit(event) {
     const start = form.isDelivery?(form.end||form.start):form.start;
     const end = form.end || start;
     if (![start,end].every(validIso)) {
-      error('Saisis une date avec une année à quatre chiffres.');
+      error(t('Saisis une date avec une année à quatre chiffres.',"Enter a date with a four-digit year."));
       return;
     }
     if (dayNumber(end)<dayNumber(start)) {
-      error('La date de fin doit être égale ou postérieure à la date de début.');
+      error(t('La date de fin doit être égale ou postérieure à la date de début.',"The end date must be on or after the start date."));
       return;
     }
     const finalKind = ['task','delivery'].includes(kind)?(form.isDelivery?'delivery':'task'):kind;
@@ -1013,7 +1024,7 @@ function submit(event) {
       const days = form.hasBuffer?Number(form.bufferDays):0;
       const available = workingDays(bufferStartDay(item),lastSupportedDay,scale.calendar);
       if (!Number.isSafeInteger(days) || (form.hasBuffer && days<1) || days>available) {
-        error('Saisis un nombre entier de jours positif compatible avec la date de fin.');
+        error(t('Saisis un nombre entier de jours positif compatible avec la date de fin.',"Enter a positive whole number of days that fits after the end date."));
         return;
       }
       setBuffer(item,days);
@@ -1035,7 +1046,11 @@ function remove() {
     const count = next.items.length-remaining.length;
     if (count && !editor.confirmDelete) {
       editor.confirmDelete = true;
-      error('Cette suppression retire aussi '+count+' élément'+(count===1?'':'s')+' du planning. Clique de nouveau sur Supprimer pour confirmer.');
+      const suffix = count===1?'':'s';
+      error(t(
+        `Cette suppression retire aussi ${count} élément${suffix} du planning. Clique de nouveau sur Supprimer pour confirmer.`,
+        `This also removes ${count} item${suffix} from the schedule. Click Delete again to confirm.`
+      ));
       return;
     }
     next.items = remaining;
@@ -1188,7 +1203,7 @@ function updateDrag() {
   }
   const tip = $('drag-dates');
   const dates = shortDate(target.start)+(target.end===target.start?'':' – '+shortDate(target.end));
-  tip.textContent = drag.buffer?'Tampon · '+bufferLabel(target.bufferDays):dates+(target.lane?' · '+target.lane.lot.name+' / '+target.lane.row.name:'');
+  tip.textContent = drag.buffer?t('Tampon · ',"Buffer · ")+bufferLabel(target.bufferDays):dates+(target.lane?' · '+target.lane.lot.name+' / '+target.lane.row.name:'');
   tip.hidden = false;
   tip.style.left = Math.max(8,Math.min(window.innerWidth-tip.offsetWidth-8,clientX+14))+'px';
   tip.style.top = (clientY>tip.offsetHeight+18?clientY-tip.offsetHeight-12:clientY+18)+'px';
@@ -1290,12 +1305,12 @@ function downloadHtml(data) {
   const a = document.createElement('a');
   const base = data.title.normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/gi,'-').replace(/^-|-$/g,'');
   a.href = url;
-  a.download = (base||'Planning')+'_Gantt.html';
+  a.download = (base||t('Planning',"Schedule"))+'_Gantt.html';
   document.body.append(a);
   a.click();
   a.remove();
   setTimeout(()=>URL.revokeObjectURL(url),1500);
-  $('status').textContent = data===planning?'La copie HTML contient le planning actuel.':'Le Gantt vierge a été téléchargé. Ouvre-le pour ajouter tes lignes.';
+  $('status').textContent = data===planning?t('La copie HTML contient le planning actuel.',"The HTML copy contains the current schedule."):t('Le Gantt vierge a été téléchargé. Ouvre-le pour ajouter tes lignes.',"The blank Gantt chart has been downloaded. Open it to add rows.");
 
 }
 function selectOnly(id) {
@@ -1344,7 +1359,7 @@ function saveJson() {
   const url = URL.createObjectURL(new Blob([JSON.stringify(planning,null,2)],{type:'application/json'}));
   const link = document.createElement('a');
   link.href = url;
-  link.download = (planning.title.replace(/[\/\\:*?"<>|]/g,'-')||'Planning')+'.json';
+  link.download = (planning.title.replace(/[\/\\:*?"<>|]/g,'-')||t('Planning',"Schedule"))+'.json';
   link.click();
   setTimeout(()=>URL.revokeObjectURL(url),1500);
 }
@@ -1400,7 +1415,7 @@ $('load-json').onchange = async event=>{
     selectedItems.clear();
     commit(next);
   } catch {
-    error('Ce fichier ne contient pas un planning Gantt valide.');
+    error(t('Ce fichier ne contient pas un planning Gantt valide.',"This file does not contain a valid Gantt schedule."));
   }
 };
 $('export').onclick = ()=>showEditor('files');
