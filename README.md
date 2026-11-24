@@ -1,6 +1,15 @@
 # GanttMesc
 
-**GanttMesc** signifie « gantt mes couilles ». C’est un éditeur de diagrammes de Gantt pour préparer et ajuster des plannings directement dans un navigateur.
+**GanttMesc** signifie « gantt mes couilles ». C’est un éditeur de diagrammes de Gantt pour préparer et ajuster des plannings directement dans un navigateur. Il génère un JSON modifiable par ton agent IA pour le piloter avec le connecteur MCP; l'éditeur HTML te permets de le modifier manuellement et de l'imprimer.
+
+## Créer et modifier un planning depuis Claude ou Codex
+
+Le serveur [`planning-mcp.mjs`](planning-mcp.mjs) s’exécute en local avec Node.js. Il peut lister, lire et créer des plannings, ajouter des lignes ou modifier des tâches. Il lit et écrit les fichiers JSON dans le dossier défini par `GANTT_PLANS_DIR`.
+
+- **Claude Desktop** : ajoute un serveur local dans `claude_desktop_config.json`. Indique le chemin absolu de Node comme commande, celui de `planning-mcp.mjs` comme argument et celui du dossier `plans/` dans `GANTT_PLANS_DIR`. Relance ensuite Claude.
+- **Claude Code et Codex** : ouvre le dépôt comme projet. La [configuration du MCP local et les commandes](AGENTS.md) se trouvent dans `AGENTS.md`.
+
+Exemple de demande : « Crée un planning Montage, puis ajoute une livraison le 15 juin 2027. » Charge le JSON obtenu dans l’éditeur via **Load/Save**. Le dépôt GitHub contient le code et les instructions. Le MCP actuel est exécuté sur ta machine.
 
 ## Démarrage rapide
 
@@ -23,11 +32,4 @@
 
 **Load/Save** permet de sauvegarder ou charger un JSON, de télécharger une copie HTML et d’exporter en PDF via la fenêtre d’impression. Le bouton **Aide** reprend les gestes dans l’éditeur.
 
-## Créer et modifier un planning depuis Claude ou Codex
 
-Le serveur [`planning-mcp.mjs`](planning-mcp.mjs) s’exécute en local avec Node.js. Il peut lister, lire et créer des plannings, ajouter des lignes ou modifier des tâches. Il lit et écrit les fichiers JSON dans le dossier défini par `GANTT_PLANS_DIR`.
-
-- **Claude Desktop** : ajoute un serveur local dans `claude_desktop_config.json`. Indique le chemin absolu de Node comme commande, celui de `planning-mcp.mjs` comme argument et celui du dossier `plans/` dans `GANTT_PLANS_DIR`. Relance ensuite Claude.
-- **Claude Code et Codex** : ouvre le dépôt comme projet. La [configuration du MCP local et les commandes](AGENTS.md) se trouvent dans `AGENTS.md`.
-
-Exemple de demande : « Crée un planning Montage, puis ajoute une livraison le 15 juin 2027. » Charge le JSON obtenu dans l’éditeur via **Load/Save**. Le dépôt GitHub contient le code et les instructions. Le MCP actuel est exécuté sur ta machine.
