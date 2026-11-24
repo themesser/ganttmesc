@@ -682,7 +682,7 @@ function addField(key,title,config={}) {
   else {
     input.type = type;
     if (type==='text') input.maxLength = limit;
-    input.value = value;
+    if (type!=='checkbox') input.value = value;
   }
   if (type==='checkbox') {
     label.classList.add('buffer-toggle');
@@ -962,8 +962,8 @@ function submit(event) {
     } else {
       next.startDate = form.start;
       next.endDate = form.end;
-      next.hideWeekends = Boolean(form.hideWeekends);
-      next.hideHolidays = Boolean(form.hideHolidays);
+      next.hideWeekends = Object.hasOwn(form,'hideWeekends');
+      next.hideHolidays = Object.hasOwn(form,'hideHolidays');
       if (next.startDate!==planning.startDate || next.endDate!==planning.endDate
         || Boolean(next.hideWeekends)!==Boolean(planning.hideWeekends)
         || Boolean(next.hideHolidays)!==Boolean(planning.hideHolidays)
