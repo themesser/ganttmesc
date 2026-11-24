@@ -1,6 +1,6 @@
 # GanttMesc
 
-**GanttMesc** signifie « gantt mes couilles ». C’est un éditeur de diagrammes de Gantt pour préparer et ajuster des plannings directement dans un navigateur. Il génère un JSON modifiable par ton agent IA pour le piloter avec le connecteur MCP; l'éditeur HTML te permets de le modifier manuellement et de l'imprimer.
+**GanttMesC** signifie « gantt mes couilles ». C’est un éditeur de diagrammes de Gantt pour préparer et ajuster des plannings directement dans un navigateur. Il génère un JSON modifiable par ton agent IA pour le piloter avec le connecteur MCP; l'éditeur HTML te permets de le modifier manuellement et de l'imprimer.
 
 ## Créer et modifier un planning depuis Claude ou Codex
 
