@@ -7,7 +7,7 @@ GanttMesc stands for “gantt mes couilles”. It is a standalone, interactive G
 ## Get started
 
 1. Clone this repository or download it using **Code → Download ZIP**.
-2. Open [index.html](index.html) in a browser. No installation is required. The interface uses French for French browser settings and English for all other languages. Schedule titles, task names, and other saved content keep their original wording.
+2. Open [index.html](https://themesser.github.io/ganttmesc/) in a browser. No installation is required. The interface uses French for French browser settings and English for all other languages. Schedule titles, task names, and other saved content keep their original wording.
 3. Use **Load/Save** to create a blank Gantt chart or load a local JSON file. Click the schedule title to rename it.
 4. Open **Settings** to set the start and estimated end dates, enter holidays and non-working days, or independently hide weekends, holidays, and day numbers. Use day/month notation for holidays, for example `20/02-7/03; 17/04-2/05; 6/05;`.
 
