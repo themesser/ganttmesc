@@ -153,6 +153,11 @@ const types = {
   marker:'Jalon global', off:'Période chômée', allocation:'Affectation seule',
   lot:'Lot', row:'Ligne de travail'
 };
+const displayOptions = [
+  ['hideWeekends','Masquer les week-ends'],
+  ['hideHolidays','Masquer les périodes de vacances'],
+  ['hideDayNumbers','Masquer les numéros des jours']
+];
 const rangeTypes = new Set(['task','review','off','allocation']);
 const bufferTypes = new Set(['marker','delivery','task','review']);
 const lastSupportedDay = dayNumber('9999-12-31');
@@ -461,7 +466,7 @@ function render() {
       g.append(rect(pos+.3,bandTop+index*bandHeight,step-.6,bandHeight,colors.get(item.lot),{rx:1,class:'shape day-highlight'}));
       cell.append(g);
     });
-    if (step>=7 || weekday===1 || number==='1') {
+    if (!planning.hideDayNumbers && (step>=7 || weekday===1 || number==='1')) {
       const occupied = !nonWorking && assignments.length>0;
       cell.append(label(number,pos+step/2,57,{
         class:'day-number',fill:occupied?'var(--day-on-bar)':'var(--day-text)',
@@ -742,6 +747,7 @@ function buildForm() {
       'Survole un titre pour afficher le +. Maj + clic sur le + ajoute une sous-ligne.',
       'Clique sur un titre pour le renommer. Glisse-le verticalement pour réordonner les lignes ou vers la droite pour créer une sous-ligne.',
       'Dans Paramétrage, saisis les vacances. Elles sont exclues du décompte du tampon, comme les week-ends.',
+      'Dans Paramétrage, masque les numéros des jours pour alléger la barre du calendrier.',
       '⌘Z annule, ⇧⌘Z rétablit. ⌫ supprime l’élément sélectionné. La molette zoome.'
     ]) {
       const entry = document.createElement('li');
@@ -775,9 +781,7 @@ function buildForm() {
       const note = document.createElement('small');
       note.textContent = 'Dates incluses. Ajoute /AAAA pour préciser une autre année.';
       holidays.parentElement.append(note);
-      for (const [key,title] of [
-        ['hideWeekends','Masquer les week-ends'],['hideHolidays','Masquer les périodes de vacances']
-      ]) {
+      for (const [key,title] of displayOptions) {
         const toggle = addField(key,title,{type:'checkbox',wide:true,required:false,value:planning[key]});
         toggle.onchange = ()=>{
           if (toggle.checked!==Boolean(planning[key])) commit({...planning,[key]:toggle.checked});
@@ -962,11 +966,9 @@ function submit(event) {
     } else {
       next.startDate = form.start;
       next.endDate = form.end;
-      next.hideWeekends = Object.hasOwn(form,'hideWeekends');
-      next.hideHolidays = Object.hasOwn(form,'hideHolidays');
+      for (const [key] of displayOptions) next[key] = Object.hasOwn(form,key);
       if (next.startDate!==planning.startDate || next.endDate!==planning.endDate
-        || Boolean(next.hideWeekends)!==Boolean(planning.hideWeekends)
-        || Boolean(next.hideHolidays)!==Boolean(planning.hideHolidays)
+        || displayOptions.some(([key])=>next[key]!==Boolean(planning[key]))
         || (form.holidays!==undefined && form.holidays!==editor.holidaysText)) {
         commit(next);
         $('chart').scrollLeft = 0;
@@ -1352,7 +1354,7 @@ function validIso(value) {
 }
 function readPlanning(data) {
   if (!data || typeof data.title!=='string' || !data.title.trim() || !Array.isArray(data.lots) || !Array.isArray(data.items)) throw Error();
-  if (['hideWeekends','hideHolidays'].some(key=>data[key]!==undefined && typeof data[key]!=='boolean')) throw Error();
+  if (displayOptions.some(([key])=>data[key]!==undefined && typeof data[key]!=='boolean')) throw Error();
   if ((data.startDate!==undefined && !validIso(data.startDate)) || (data.endDate!==undefined && !validIso(data.endDate))
     || (data.startDate && data.endDate && data.startDate>data.endDate)) throw Error();
   const ids = new Set();
