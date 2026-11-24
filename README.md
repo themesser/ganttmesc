@@ -4,6 +4,7 @@
 
 ## Créer et modifier un planning depuis Claude ou Codex
 
+Le plus simple est de copier l'URL de ce repo dans Claude/ChatGPT ou autre et de lui demander de l'installer pour toi.
 Le serveur [`planning-mcp.mjs`](planning-mcp.mjs) s’exécute en local avec Node.js. Il peut lister, lire et créer des plannings, ajouter des lignes ou modifier des tâches. Il lit et écrit les fichiers JSON dans le dossier défini par `GANTT_PLANS_DIR`.
 
 - **Claude Desktop** : ajoute un serveur local dans `claude_desktop_config.json`. Indique le chemin absolu de Node comme commande, celui de `planning-mcp.mjs` comme argument et celui du dossier `plans/` dans `GANTT_PLANS_DIR`. Relance ensuite Claude.
