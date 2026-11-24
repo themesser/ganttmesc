@@ -732,7 +732,9 @@ function buildForm() {
   $('error').hidden = true;
   $('delete').hidden = !['item','lot','row'].includes(mode);
   $('save').hidden = mode==='files' || mode==='help';
-  $('save').textContent = mode==='browse' ? t('Modifier',"Edit") : t('Enregistrer',"Save");
+  $('save').textContent = ({
+    browse:t('Modifier',"Edit"), blank:t('Créer',"Create")
+  })[mode] || t('Enregistrer',"Save");
   $('dialog-title').textContent = ({
     help:t('Aide du planning',"Gantt help"), files:'Load/Save', date:t('Paramétrage du planning',"Schedule settings"), blank:t('Créer un Gantt vierge',"Create a blank Gantt chart"), title:t('Renommer le planning',"Rename the schedule"), browse:t('Liste des éléments',"Scheduled items"), add:t('Ajouter au planning',"Add to schedule"),
     bulk:t('Restriction par identifiant',"Resource scheduling constraint"), item:t('Modifier · ',"Edit · ")+types[kind], lot:t('Modifier le lot',"Edit work package"), row:t('Modifier la ligne',"Edit row")
@@ -973,7 +975,9 @@ function submit(event) {
     }
     $('dialog').close();
     if (mode==='blank') {
-      downloadHtml({title:t('Nouveau planning',"New schedule"),startDate:form.start,lots:[],items:[]});
+      selectedItems.clear();
+      commit({title:t('Nouveau planning',"New schedule"),startDate:form.start,lots:[],items:[]});
+      $('chart').scrollLeft = 0;
     } else {
       next.startDate = form.start;
       next.endDate = form.end;
@@ -1310,7 +1314,7 @@ function downloadHtml(data) {
   a.click();
   a.remove();
   setTimeout(()=>URL.revokeObjectURL(url),1500);
-  $('status').textContent = data===planning?t('La copie HTML contient le planning actuel.',"The HTML copy contains the current schedule."):t('Le Gantt vierge a été téléchargé. Ouvre-le pour ajouter tes lignes.',"The blank Gantt chart has been downloaded. Open it to add rows.");
+  $('status').textContent = t('La copie HTML contient le planning actuel.',"The HTML copy contains the current schedule.");
 
 }
 function selectOnly(id) {
